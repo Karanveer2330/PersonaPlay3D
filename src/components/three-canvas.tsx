@@ -81,13 +81,16 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
   };
 
   const animateVRM = (vrm: VRM, results: any) => {
+      if (!currentVrm.current) return;
+
       let riggedPose, riggedLeftHand, riggedRightHand, riggedFace;
       const videoElement = videoRef.current;
       if (!videoElement) return;
 
       try {
         const faceLandmarks = results.faceLandmarks;
-        const pose3DLandmarks = results.poseWorldLandmarks;
+        // Note: 'ea' is used for 3D landmarks based on the library version being loaded.
+        const pose3DLandmarks = results.ea; 
         const pose2DLandmarks = results.poseLandmarks;
         const leftHandLandmarks = results.rightHandLandmarks;
         const rightHandLandmarks = results.leftHandLandmarks;
