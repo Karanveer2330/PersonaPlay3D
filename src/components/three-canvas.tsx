@@ -75,12 +75,19 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
 
       let riggedPose, riggedFace;
 
-      if (results.poseLandmarks) {
-        riggedPose = Kalidokit.Pose.solve(results.poseLandmarks, { runtime: "mediapipe", video: videoElement });
+      try {
+        if (results.poseLandmarks) {
+          riggedPose = Kalidokit.Pose.solve(results.poseLandmarks, { runtime: "mediapipe", video: videoElement });
+        }
+        if (results.faceLandmarks) {
+          riggedFace = Kalidokit.Face.solve(results.faceLandmarks, { runtime: "mediapipe", video: videoElement });
+        }
+      } catch (error) {
+        // Errors can happen when MediaPipe loses track of the user.
+        // We can safely ignore these errors and wait for the next frame.
+        return;
       }
-      if (results.faceLandmarks) {
-        riggedFace = Kalidokit.Face.solve(results.faceLandmarks, { runtime: "mediapipe", video: videoElement });
-      }
+
 
       if (riggedPose && currentVrm.current.humanoid) {
         currentVrm.current.humanoid.setPose(riggedPose);
