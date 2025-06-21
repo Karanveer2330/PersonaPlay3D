@@ -20,31 +20,31 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
   const { toast } = useToast();
   const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
 
+  // Effect to load the MediaPipe Holistic script
   useEffect(() => {
-    const scriptId = "mediapipe-holistic-script";
-    if (document.getElementById(scriptId)) {
-      setIsHolisticLoaded(true);
-      return;
-    }
-
     const script = document.createElement("script");
-    script.id = scriptId;
     script.src = "https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/holistic.js";
     script.crossOrigin = "anonymous";
     script.async = true;
     script.onload = () => setIsHolisticLoaded(true);
     script.onerror = () => {
       toast({
-        title: "Script Error",
-        description: "Failed to load MediaPipe script. Motion tracking will not work.",
+        title: "Script Load Error",
+        description: "Failed to load face tracking script. Ad-blockers may be the cause.",
         variant: "destructive",
       });
     };
     document.body.appendChild(script);
 
+    return () => {
+      // Clean up script tag if component unmounts
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
   }, [toast]);
 
-
+  // Effect for camera and face tracking setup
   useEffect(() => {
     if (!isCameraEnabled || !videoRef.current || !isHolisticLoaded) return;
 
@@ -83,8 +83,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
           riggedFace = Kalidokit.Face.solve(results.faceLandmarks, { runtime: "mediapipe", video: videoElement });
         }
       } catch (error) {
-        // Errors can happen when MediaPipe loses track of the user.
-        // We can safely ignore these errors and wait for the next frame.
         return;
       }
 
@@ -97,8 +95,8 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
         currentVrm.current.expressionManager.setValue("mouthSmile", riggedFace.mouth.x);
         
         const lookAtTarget = new THREE.Vector3().copy(currentVrm.current.scene.position);
-        lookAtTarget.y += 1.6; // head height
-        lookAtTarget.z += 5; // look forward
+        lookAtTarget.y += 1.6;
+        lookAtTarget.z += 5;
         lookAtTarget.x += riggedFace.look.x * 2;
         lookAtTarget.y += riggedFace.look.y * 2;
         
@@ -107,20 +105,17 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     };
     
     setupCamera();
-
-    const HolisticConstructor = (window as any).Holistic?.default || (window as any).Holistic;
     
-    if (!HolisticConstructor || typeof HolisticConstructor !== 'function') {
-      toast({
-        title: "Initialization Error",
-        description: "MediaPipe Holistic not ready. Please refresh and try again.",
-        variant: "destructive",
-      });
-      return;
+    const Holistic = (window as any).Holistic;
+    if (!Holistic) {
+        console.error("Holistic constructor not found on window object.");
+        return;
     }
 
-    holistic = new HolisticConstructor({
-        locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`,
+    holistic = new Holistic({
+        locateFile: (file: string) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`;
+        },
     });
     
     holistic.setOptions({
@@ -154,6 +149,7 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     };
   }, [isCameraEnabled, toast, isHolisticLoaded]);
 
+  // Effect for Three.js scene setup
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
