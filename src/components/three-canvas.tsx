@@ -119,52 +119,53 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
                 rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
                 rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
                 rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
+            
+                // Animate Hands
+                if (leftHandLandmarks) {
+                    riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
+                    if (riggedLeftHand) {
+                      rigRotation(vrm, "leftHand", { z: riggedPose.LeftHand.z, y: riggedLeftHand.LeftWrist.y, x: riggedLeftHand.LeftWrist.x, });
+                      rigRotation(vrm, "leftRingProximal", riggedLeftHand.LeftRingProximal);
+                      rigRotation(vrm, "leftRingIntermediate", riggedLeftHand.LeftRingIntermediate);
+                      rigRotation(vrm, "leftRingDistal", riggedLeftHand.LeftRingDistal);
+                      rigRotation(vrm, "leftIndexProximal", riggedLeftHand.LeftIndexProximal);
+                      rigRotation(vrm, "leftIndexIntermediate", riggedLeftHand.LeftIndexIntermediate);
+                      rigRotation(vrm, "leftIndexDistal", riggedLeftHand.LeftIndexDistal);
+                      rigRotation(vrm, "leftMiddleProximal", riggedLeftHand.LeftMiddleProximal);
+                      rigRotation(vrm, "leftMiddleIntermediate", riggedLeftHand.LeftMiddleIntermediate);
+                      rigRotation(vrm, "leftMiddleDistal", riggedLeftHand.LeftMiddleDistal);
+                      rigRotation(vrm, "leftThumbProximal", riggedLeftHand.LeftThumbProximal);
+                      rigRotation(vrm, "leftThumbIntermediate", riggedLeftHand.LeftThumbIntermediate);
+                      rigRotation(vrm, "leftThumbDistal", riggedLeftHand.LeftThumbDistal);
+                      rigRotation(vrm, "leftLittleProximal", riggedLeftHand.LeftLittleProximal);
+                      rigRotation(vrm, "leftLittleIntermediate", riggedLeftHand.LeftLittleIntermediate);
+                      rigRotation(vrm, "leftLittleDistal", riggedLeftHand.LeftLittleDistal);
+                    }
+                }
+                if (rightHandLandmarks) {
+                    riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
+                    if (riggedRightHand) {
+                      rigRotation(vrm, "rightHand", { z: riggedPose.RightHand.z, y: riggedRightHand.RightWrist.y, x: riggedRightHand.RightWrist.x, });
+                      rigRotation(vrm, "rightRingProximal", riggedRightHand.RightRingProximal);
+                      rigRotation(vrm, "rightRingIntermediate", riggedRightHand.RightRingIntermediate);
+                      rigRotation(vrm, "rightRingDistal", riggedRightHand.RightRingDistal);
+                      rigRotation(vrm, "rightIndexProximal", riggedRightHand.RightIndexProximal);
+                      rigRotation(vrm, "rightIndexIntermediate", riggedRightHand.RightIndexIntermediate);
+                      rigRotation(vrm, "rightIndexDistal", riggedRightHand.RightIndexDistal);
+                      rigRotation(vrm, "rightMiddleProximal", riggedRightHand.RightMiddleProximal);
+                      rigRotation(vrm, "rightMiddleIntermediate", riggedRightHand.RightMiddleIntermediate);
+                      rigRotation(vrm, "rightMiddleDistal", riggedRightHand.RightMiddleDistal);
+                      rigRotation(vrm, "rightThumbProximal", riggedRightHand.RightThumbProximal);
+                      rigRotation(vrm, "rightThumbIntermediate", riggedRightHand.RightThumbIntermediate);
+                      rigRotation(vrm, "rightThumbDistal", riggedRightHand.RightThumbDistal);
+                      rigRotation(vrm, "rightLittleProximal", riggedRightHand.RightLittleProximal);
+                      rigRotation(vrm, "rightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
+                      rigRotation(vrm, "rightLittleDistal", riggedRightHand.RightLittleDistal);
+                    }
+                }
             }
         }
         
-        // Animate Hands
-        if (leftHandLandmarks && riggedPose) {
-            riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
-            if (riggedLeftHand) {
-              rigRotation(vrm, "leftHand", { z: riggedPose.LeftHand.z, y: riggedLeftHand.LeftWrist.y, x: riggedLeftHand.LeftWrist.x, });
-              rigRotation(vrm, "leftRingProximal", riggedLeftHand.LeftRingProximal);
-              rigRotation(vrm, "leftRingIntermediate", riggedLeftHand.LeftRingIntermediate);
-              rigRotation(vrm, "leftRingDistal", riggedLeftHand.LeftRingDistal);
-              rigRotation(vrm, "leftIndexProximal", riggedLeftHand.LeftIndexProximal);
-              rigRotation(vrm, "leftIndexIntermediate", riggedLeftHand.LeftIndexIntermediate);
-              rigRotation(vrm, "leftIndexDistal", riggedLeftHand.LeftIndexDistal);
-              rigRotation(vrm, "leftMiddleProximal", riggedLeftHand.LeftMiddleProximal);
-              rigRotation(vrm, "leftMiddleIntermediate", riggedLeftHand.LeftMiddleIntermediate);
-              rigRotation(vrm, "leftMiddleDistal", riggedLeftHand.LeftMiddleDistal);
-              rigRotation(vrm, "leftThumbProximal", riggedLeftHand.LeftThumbProximal);
-              rigRotation(vrm, "leftThumbIntermediate", riggedLeftHand.LeftThumbIntermediate);
-              rigRotation(vrm, "leftThumbDistal", riggedLeftHand.LeftThumbDistal);
-              rigRotation(vrm, "leftLittleProximal", riggedLeftHand.LeftLittleProximal);
-              rigRotation(vrm, "leftLittleIntermediate", riggedLeftHand.LeftLittleIntermediate);
-              rigRotation(vrm, "leftLittleDistal", riggedLeftHand.LeftLittleDistal);
-            }
-        }
-        if (rightHandLandmarks && riggedPose) {
-            riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
-            if (riggedRightHand) {
-              rigRotation(vrm, "rightHand", { z: riggedPose.RightHand.z, y: riggedRightHand.RightWrist.y, x: riggedRightHand.RightWrist.x, });
-              rigRotation(vrm, "rightRingProximal", riggedRightHand.RightRingProximal);
-              rigRotation(vrm, "rightRingIntermediate", riggedRightHand.RightRingIntermediate);
-              rigRotation(vrm, "rightRingDistal", riggedRightHand.RightRingDistal);
-              rigRotation(vrm, "rightIndexProximal", riggedRightHand.RightIndexProximal);
-              rigRotation(vrm, "rightIndexIntermediate", riggedRightHand.RightIndexIntermediate);
-              rigRotation(vrm, "rightIndexDistal", riggedRightHand.RightIndexDistal);
-              rigRotation(vrm, "rightMiddleProximal", riggedRightHand.RightMiddleProximal);
-              rigRotation(vrm, "rightMiddleIntermediate", riggedRightHand.RightMiddleIntermediate);
-              rigRotation(vrm, "rightMiddleDistal", riggedRightHand.RightMiddleDistal);
-              rigRotation(vrm, "rightThumbProximal", riggedRightHand.RightThumbProximal);
-              rigRotation(vrm, "rightThumbIntermediate", riggedRightHand.RightThumbIntermediate);
-              rigRotation(vrm, "rightThumbDistal", riggedRightHand.RightThumbDistal);
-              rigRotation(vrm, "rightLittleProximal", riggedRightHand.RightLittleProximal);
-              rigRotation(vrm, "rightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
-              rigRotation(vrm, "rightLittleDistal", riggedRightHand.RightLittleDistal);
-            }
-        }
       } catch (error) {
         // console.error("Kalidokit solve error:", error);
       }
