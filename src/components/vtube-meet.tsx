@@ -24,15 +24,7 @@ export default function VTubeMeet() {
           <main className="relative h-full w-full">
             <ThreeCanvas vrmUrl={vrmUrl} isCameraEnabled={isCameraEnabled} />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-              {!vrmUrl && (
-                <Card className="max-w-md pointer-events-auto shadow-2xl animate-fade-in-up">
-                  <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-foreground">Welcome to VTube Meet</CardTitle>
-                    <CardDescription>Upload a VRM model from the side panel to get started.</CardDescription>
-                  </CardHeader>
-                </Card>
-              )}
-              {vrmUrl && !isCameraEnabled && (
+              {vrmUrl !== null && !isCameraEnabled && (
                  <Card className="max-w-md pointer-events-auto shadow-2xl animate-fade-in-up">
                   <CardHeader>
                     <CardTitle className="text-2xl font-bold text-foreground">Enable Your Camera</CardTitle>
