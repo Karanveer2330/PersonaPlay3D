@@ -21,12 +21,6 @@ const nextConfig: NextConfig = {
    webpack: (config, { isServer }) => {
     config.resolve.fallback = { fs: false, path: false };
     
-    // Add a rule to handle .wasm files
-    config.module.rules.push({
-      test: /\.wasm$/,
-      type: "asset/resource",
-    });
-
     config.externals.push('sharp');
 
     return config;

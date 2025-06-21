@@ -7,7 +7,6 @@ import { VRM, VRMUtils, VRMLoaderPlugin } from "@pixiv/three-vrm";
 import * as Kalidokit from "kalidokit";
 import { useToast } from "@/hooks/use-toast";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import holisticWasm from "@mediapipe/holistic/holistic.binary.wasm";
 
 interface ThreeCanvasProps {
   vrmUrl: string | null;
@@ -121,12 +120,7 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     }
 
     holistic = new HolisticConstructor({
-        locateFile: (file: string) => {
-          if (file.endsWith('.wasm')) {
-            return holisticWasm;
-          }
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`
-        },
+        locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`,
     });
     
     holistic.setOptions({
