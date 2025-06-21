@@ -73,8 +73,14 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     const onResults = (results: any) => {
       if (!currentVrm.current) return;
 
-      const riggedPose = Kalidokit.Pose.solve(results.poseLandmarks, { runtime: "mediapipe", video: videoElement });
-      const riggedFace = Kalidokit.Face.solve(results.faceLandmarks, { runtime: "mediapipe", video: videoElement });
+      let riggedPose, riggedFace;
+
+      if (results.poseLandmarks) {
+        riggedPose = Kalidokit.Pose.solve(results.poseLandmarks, { runtime: "mediapipe", video: videoElement });
+      }
+      if (results.faceLandmarks) {
+        riggedFace = Kalidokit.Face.solve(results.faceLandmarks, { runtime: "mediapipe", video: videoElement });
+      }
 
       if (riggedPose && currentVrm.current.humanoid) {
         currentVrm.current.humanoid.setPose(riggedPose);
