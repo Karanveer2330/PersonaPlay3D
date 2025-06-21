@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin } from "@pixiv/three-vrm";
-import Holistic from "@mediapipe/holistic";
+import "@mediapipe/holistic";
 import * as Kalidokit from "kalidokit";
 import { useToast } from "@/hooks/use-toast";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -24,7 +24,7 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     if (!isCameraEnabled || !videoRef.current) return;
 
     const videoElement = videoRef.current;
-    let holistic: Holistic;
+    let holistic: any;
     let holisticFrameId: number;
 
     const setupCamera = async () => {
@@ -70,8 +70,8 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     
     setupCamera();
 
-    holistic = new Holistic({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`,
+    holistic = new (window as any).Holistic({
+        locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`,
     });
     
     holistic.setOptions({
