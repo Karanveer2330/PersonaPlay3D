@@ -1,10 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from 'next/dynamic';
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import SidebarControls from "@/components/sidebar-controls";
-import ThreeCanvas from "@/components/three-canvas";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+
+const ThreeCanvas = dynamic(() => import('@/components/three-canvas'), { 
+  ssr: false,
+  loading: () => <div className="h-full w-full bg-muted animate-pulse" /> 
+});
+
 
 export default function VTubeMeet() {
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
