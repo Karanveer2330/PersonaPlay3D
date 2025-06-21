@@ -17,7 +17,7 @@ interface ThreeCanvasProps {
 const rigRotation = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], rotation = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
     if (!vrm.humanoid) return;
 
-    const Part = vrm.humanoid.getBoneNode(name);
+    const Part = vrm.humanoid.getNormalizedBoneNode(name);
     if (!Part) return;
 
     let euler = new THREE.Euler(rotation.x * dampener, rotation.y * dampener, rotation.z * dampener, "XYZ");
@@ -29,7 +29,7 @@ const rigRotation = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], rotation =
 const rigPosition = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], position = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
     if (!vrm.humanoid) return;
     
-    const Part = vrm.humanoid.getBoneNode(name);
+    const Part = vrm.humanoid.getNormalizedBoneNode(name);
     if (!Part) return;
 
     let vector = new THREE.Vector3(position.x * dampener, position.y * dampener, position.z * dampener);
