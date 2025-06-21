@@ -90,17 +90,17 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
       if (riggedPose && currentVrm.current.humanoid) {
         currentVrm.current.humanoid.setPose(riggedPose);
       }
-      if (riggedFace && currentVrm.current.expressionManager && currentVrm.current.lookAt) {
-        currentVrm.current.expressionManager.setValue("mouthOpen", riggedFace.mouth.y);
-        currentVrm.current.expressionManager.setValue("mouthSmile", riggedFace.mouth.x);
+      if (riggedFace && currentVrm.current.expressionManager) {
+        currentVrm.current.expressionManager.setValue("a", riggedFace.mouth.shape.A);
+        currentVrm.current.expressionManager.setValue("i", riggedFace.mouth.shape.I);
+        currentVrm.current.expressionManager.setValue("u", riggedFace.mouth.shape.U);
+        currentVrm.current.expressionManager.setValue("e", riggedFace.mouth.shape.E);
+        currentVrm.current.expressionManager.setValue("o", riggedFace.mouth.shape.O);
         
-        const lookAtTarget = new THREE.Vector3().copy(currentVrm.current.scene.position);
-        lookAtTarget.y += 1.6;
-        lookAtTarget.z += 5;
-        lookAtTarget.x += riggedFace.look.x * 2;
-        lookAtTarget.y += riggedFace.look.y * 2;
-        
-        currentVrm.current.lookAt.target.position.copy(lookAtTarget);
+        if (riggedFace.eye) {
+            currentVrm.current.expressionManager.setValue("blinkLeft", 1 - riggedFace.eye.l);
+            currentVrm.current.expressionManager.setValue("blinkRight", 1 - riggedFace.eye.r);
+        }
       }
     };
     
@@ -109,6 +109,13 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     const Holistic = (window as any).Holistic;
     if (!Holistic) {
         console.error("Holistic constructor not found on window object.");
+        if (isHolisticLoaded) {
+            toast({
+                title: "Initialization Error",
+                description: "Face tracking library loaded but could not be initialized.",
+                variant: "destructive",
+            });
+        }
         return;
     }
 
