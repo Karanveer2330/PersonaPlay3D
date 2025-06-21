@@ -21,7 +21,14 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
   const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
 
   useEffect(() => {
+    const scriptId = "mediapipe-holistic-script";
+    if (document.getElementById(scriptId)) {
+      setIsHolisticLoaded(true);
+      return;
+    }
+
     const script = document.createElement("script");
+    script.id = scriptId;
     script.src = "https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/holistic.js";
     script.crossOrigin = "anonymous";
     script.async = true;
@@ -35,9 +42,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     };
     document.body.appendChild(script);
 
-    return () => {
-      document.body.removeChild(script);
-    };
   }, [toast]);
 
 
@@ -91,7 +95,18 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
     
     setupCamera();
 
-    holistic = new (window as any).Holistic({
+    const HolisticConstructor = (window as any).Holistic?.default || (window as any).Holistic;
+    
+    if (!HolisticConstructor || typeof HolisticConstructor !== 'function') {
+      toast({
+        title: "Initialization Error",
+        description: "MediaPipe Holistic not ready. Please refresh and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    holistic = new HolisticConstructor({
         locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/${file}`,
     });
     
