@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin } from "@pixiv/three-vrm";
-import "@mediapipe/holistic";
 import * as Kalidokit from "kalidokit";
 import { useToast } from "@/hooks/use-toast";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -19,9 +18,31 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentVrm = useRef<VRM | null>(null);
   const { toast } = useToast();
+  const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
 
   useEffect(() => {
-    if (!isCameraEnabled || !videoRef.current) return;
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1675471629/holistic.js";
+    script.crossOrigin = "anonymous";
+    script.async = true;
+    script.onload = () => setIsHolisticLoaded(true);
+    script.onerror = () => {
+      toast({
+        title: "Script Error",
+        description: "Failed to load MediaPipe script. Motion tracking will not work.",
+        variant: "destructive",
+      });
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [toast]);
+
+
+  useEffect(() => {
+    if (!isCameraEnabled || !videoRef.current || !isHolisticLoaded) return;
 
     const videoElement = videoRef.current;
     let holistic: any;
@@ -91,17 +112,19 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled }: ThreeCanvasProps) => {
         holisticFrameId = requestAnimationFrame(sendToHolistic);
     };
 
-    videoElement.addEventListener("loadeddata", () => {
+    const loadedDataHandler = () => {
         sendToHolistic();
-    });
+    };
+    videoElement.addEventListener("loadeddata", loadedDataHandler);
 
     return () => {
       cancelAnimationFrame(holisticFrameId);
       holistic?.close();
       const stream = videoElement.srcObject as MediaStream;
       stream?.getTracks().forEach(track => track.stop());
+      videoElement.removeEventListener("loadeddata", loadedDataHandler);
     };
-  }, [isCameraEnabled, toast]);
+  }, [isCameraEnabled, toast, isHolisticLoaded]);
 
   useEffect(() => {
     const mount = mountRef.current;
