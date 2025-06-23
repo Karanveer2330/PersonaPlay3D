@@ -1,5 +1,1 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+This web application provides full-body tracking for any VRM model by simply uploading your model. Leveraging Next.js for a performant and scalable frontend and Kalidokit for robust pose estimation, the platform enables real-time, accurate motion capture. Users can effortlessly bring their VRM avatars to life, animating them with natural body movements.
